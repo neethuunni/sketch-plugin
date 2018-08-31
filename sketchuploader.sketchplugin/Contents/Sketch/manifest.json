@@ -1,0 +1,18 @@
+{
+  "name" : "Sketch Uploader",
+  "identifier" : "neethu.sketchuploader",
+  "version" : "1.0.0",
+  "description" : "An interface for exporting all sketch files to eXegesis application.",
+  "authorEmail" : "neethuu@qburst.com",
+  "author" : "Neethu S Unni",
+
+  "commands" : [
+    {
+      "script" : "app.cocoascript",
+      "handler" : "onRun",
+      "shortcut" : "ctrl alt q",
+      "name" : "Export All Sketch Files",
+      "identifier" : "show-sketch-uploader-ui"
+    }
+  ],
+}
