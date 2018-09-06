@@ -181,7 +181,7 @@ SketchPlugin.prototype.createWebViewRedirectDelegate = function() {
         function(sender, URL) {
             // Ensure its the URL we want to respond to.
             // You can also fire different methods based on the URL if you have multiple events.
-            if ('https://localhost:8080/sketchuploader' != URL) {
+            if ('http://10.7.50.13/exegesis/svg_parser/parse_svg/static/sketches/' != URL) {
                 return;
             }
             // A special method to export symbols - we haven’t created it yet
