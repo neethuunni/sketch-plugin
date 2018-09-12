@@ -181,9 +181,6 @@ SketchPlugin.prototype.createWebViewRedirectDelegate = function() {
         function(sender, URL) {
             // Ensure its the URL we want to respond to.
             // You can also fire different methods based on the URL if you have multiple events.
-            if ('http://10.7.50.13:8000/exegesis/' != URL) {
-                return;
-            }
             // A special method to export symbols - we haven’t created it yet
             this.exportAllSymbolsToImages();
             this.shareToServer();
@@ -229,5 +226,4 @@ SketchPlugin.prototype.shareToServer = function() {
     request.setURL_(NSURL.URLWithString_('https://raw.githubusercontent.com/nodejs/node/master/AUTHORS'));
     var responseData = NSURLConnection.sendSynchronousRequest_returningResponse_error_(request,nil,nil);
     var stringResponse = NSString.alloc().initWithData_encoding_(responseData,NSUTF8StringEncoding]);
-    this.context.document.displayMessage(stringResponse);
 }

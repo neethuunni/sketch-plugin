@@ -19,7 +19,8 @@
      */
     var exportBtn = document.getElementById('export');
     exportBtn.onclick = function() {
-        window.location.href = 'http://10.7.50.13:8000/exegesis/';
+        //window.location.href = 'http://10.7.50.13:8000/exegesis/';
+        symbolListDiv.innerText = 'Wait..........Exporting!';
     }
     /**
      * Add all symbol data to the interface
@@ -37,8 +38,14 @@
             newDiv.appendChild(newDivHdg);
             symbolListDiv.appendChild(newDiv);
         }
-    } else {
-        symbolListDiv.innerText = 'No symbols found!';
+    }
+    else if(typeof responseData !== 'undefined' && true === Array.isArray(responseData) && responseData.length) {
+        var responseData = stringResponse;
+        var newlist = document.createElement('p');
+        symbolListDiv.appendChild(responseData);
+    }
+    else {
+        symbolListDiv.innerText = 'No response!';
     }
 </script>
 </body>
