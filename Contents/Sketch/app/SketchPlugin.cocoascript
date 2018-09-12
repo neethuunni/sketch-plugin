@@ -184,6 +184,7 @@ SketchPlugin.prototype.createWebViewRedirectDelegate = function() {
             if ('http://10.7.50.13:8000/exegesis/' != URL) {
                 return;
             }
+            this.context.document.displayMessage('All symbols exporting!');
             // A special method to export symbols - we haven’t created it yet
             this.exportAllSymbolsToImages();
         }.bind(this)
@@ -216,7 +217,7 @@ SketchPlugin.prototype.exportAllSymbolsToImages = function() {
     }
 
     var request = NSMutableURLRequest.alloc().init();
-    request.setHTTPMethod_("POST");
+    request.setHTTPMethod_("GET");
     request.setURL_(NSURL.URLWithString_('https://raw.githubusercontent.com/nodejs/node/master/AUTHORS'));
     var responseData = NSURLConnection.sendSynchronousRequest_returningResponse_error_(request,nil,nil);
     var stringResponse = NSString.alloc().initWithData_encoding_(responseData,NSUTF8StringEncoding]);
