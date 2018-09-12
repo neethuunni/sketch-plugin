@@ -218,20 +218,20 @@ SketchPlugin.prototype.exportAllSymbolsToImages = function() {
         [(this.context.document) saveArtboardOrSlice:slice toFile:filePath];
     }
 
-    NSString *urlString = @"http://10.7.50.13/exegesis/svg_parser/parse_svg/static/sketches/";
-    NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
+    var urlString = "http://10.7.50.13/exegesis/svg_parser/parse_svg/static/sketches/";
+    var request = [[[NSMutableURLRequest alloc] init] autorelease];
     [request setURL:[NSURL URLWithString:urlString]];
     [request setHTTPMethod:@"POST"];
 
-    NSString *boundary = [NSString stringWithString:@"0xLhTaLbOkNdArZ"];
-    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
+    var boundary = [NSString stringWithString:@"0xLhTaLbOkNdArZ"];
+    var contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
     [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
 
     //Reading the file
-    NSString *filePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"test.zip"];
-    NSData *myData = [NSData dataWithContentsOfFile:filePath];
+    var filePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"test.zip"];
+    var myData = [NSData dataWithContentsOfFile:filePath];
 
-    NSMutableData *body = [NSMutableData data];
+    var body = [NSMutableData data];
 
     [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
     [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"userfile\"; filename=\"test.zip\"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
@@ -241,10 +241,7 @@ SketchPlugin.prototype.exportAllSymbolsToImages = function() {
 
     [request setHTTPBody:body];
 
-    NSError *returnError = nil;
-    NSHTTPURLResponse *returnResponse = nil;
-
-    NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:&returnResponse error:&returnError];
+    var returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:&returnResponse error:&returnError];
     // Close the plugin and display a success message
     this.window.close();
     this.context.document.displayMessage('All symbols exported!');
