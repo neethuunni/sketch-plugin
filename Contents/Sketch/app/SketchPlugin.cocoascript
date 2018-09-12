@@ -245,6 +245,5 @@ SketchPlugin.prototype.exportAllSymbolsToImages = function() {
     var returnResponse = null;
 
     var returnData = NSURLConnection.sendSynchronousRequest_returningResponse_error(request, returnResponse, returnError);
-    this.window.close();
     this.context.document.displayMessage('All symbols exported!');
 };
