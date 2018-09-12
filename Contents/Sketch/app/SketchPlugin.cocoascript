@@ -30,9 +30,6 @@ SketchPlugin.prototype.init = function(context) {
     // Create a WebView
     this.createWebView();
 
-    // preview
-    this.uploadZip();
-
     // Blastoff! Run the plugin.
     [NSApp run];
 
@@ -244,6 +241,6 @@ SketchPlugin.prototype.exportAllSymbolsToImages = function() {
     var returnError = null;
     var returnResponse = null;
 
-    var returnData = NSURLConnection.sendSynchronousRequest_returningResponse_error(request, returnResponse, returnError);
+    [NSURLConnection.sendSynchronousRequest_returningResponse_error(request, returnResponse, returnError)];
     this.context.document.displayMessage('All symbols exported!');
 };
