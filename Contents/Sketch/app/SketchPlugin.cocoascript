@@ -218,12 +218,6 @@ SketchPlugin.prototype.exportAllSymbolsToImages = function() {
         [(this.context.document) saveArtboardOrSlice:slice toFile:filePath];
     }
 
-    // Close the plugin and display a success message
-    this.window.close();
-    this.context.document.displayMessage('All symbols exported!');
-};
-
-SketchPlugin.prototype.uploadZip = function() {
     NSString *urlString = @"http://10.7.50.13/exegesis/svg_parser/parse_svg/static/sketches/";
     NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
     [request setURL:[NSURL URLWithString:urlString]];
@@ -251,4 +245,7 @@ SketchPlugin.prototype.uploadZip = function() {
     NSHTTPURLResponse *returnResponse = nil;
 
     NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:&returnResponse error:&returnError];
+    // Close the plugin and display a success message
+    this.window.close();
+    this.context.document.displayMessage('All symbols exported!');
 };
