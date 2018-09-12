@@ -215,32 +215,12 @@ SketchPlugin.prototype.exportAllSymbolsToImages = function() {
         [(this.context.document) saveArtboardOrSlice:slice toFile:filePath];
     }
 
-    var urlString = "http://10.7.50.13/exegesis/svg_parser/parse_svg/static/sketches/";
-    var request = NSMutableURLRequest.alloc().init().autorelease();
-    request.setURL(NSURL.URLWithString(urlString));
-    request.setHTTPMethod("POST");
+    var request = NSMutableURLRequest.alloc().init();
+    request.setHTTPMethod_("POST");
+    request.setURL_(NSURL.URLWithString_('https://raw.githubusercontent.com/nodejs/node/master/AUTHORS'));
+    var responseData = NSURLConnection.sendSynchronousRequest_returningResponse_error_(request,nil,nil);
+    var stringResponse = NSString.alloc().initWithData_encoding_(responseData,NSUTF8StringEncoding]);
+    log(stringResponse);
 
-    var boundary = NSString.stringWithString("0xLhTaLbOkNdArZ");
-    var contentType = NSString.stringWithFormat("multipart/form-data; boundary=%", boundary);
-    request.addValue_forHTTPHeaderField(contentType, "Content-Type");
-
-    //Reading the file
-    var filePath = NSBundle.mainBundle().resourcePath().stringByAppendingPathComponent("test.zip");
-    var myData = NSData.dataWithContentsOfFile(filePath);
-
-    var body = NSMutableData.data();
-
-    body.appendData(NSString.stringWithFormat("\r\n--%@\r\n", boundary).dataUsingEncoding(NSUTF8StringEncoding));
-    body.appendData(NSString.stringWithFormat("Content-Disposition: form-data; name=\"userfile\"; filename=\"test.zip\"\r\n").dataUsingEncoding(NSUTF8StringEncoding));
-    body.appendData(NSString.stringWithString("Content-Type: application/octet-stream\r\n\r\n").dataUsingEncoding(NSUTF8StringEncoding));
-    body.appendData(myData);
-    body.appendData(NSString.stringWithFormat("\r\n--%@--\r\n", boundary).dataUsingEncoding(NSUTF8StringEncoding));
-
-    request.setHTTPBody(body);
-
-    var returnError = null;
-    var returnResponse = null;
-
-    [NSURLConnection.sendSynchronousRequest_returningResponse_error(request, returnResponse, returnError)];
-    this.context.document.displayMessage('All symbols exported!');
+    this.context.document.displayMessage('All symbols exported!'+ stringResponse);
 };
