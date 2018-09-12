@@ -38,8 +38,11 @@
             newDiv.appendChild(newDivHdg);
             symbolListDiv.appendChild(newDiv);
         }
+    } else {
+        symbolListDiv.innerText = 'No symbols found!';
     }
-    else if(typeof responseData !== 'undefined' && true === Array.isArray(responseData) && responseData.length) {
+    
+    if(typeof responseData !== 'undefined' && true === Array.isArray(responseData) && responseData.length) {
         var responseData = stringResponse;
         var newlist = document.createElement('p');
         symbolListDiv.appendChild(responseData);

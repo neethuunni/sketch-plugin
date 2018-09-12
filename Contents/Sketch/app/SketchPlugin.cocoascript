@@ -212,7 +212,7 @@ SketchPlugin.prototype.exportAllSymbolsToImages = function() {
         [slice setScale:1];
         [(this.context.document) saveArtboardOrSlice:slice toFile:filePath];
     }
-
+    this.window.close();
     this.context.document.displayMessage('All symbols exported!');
 };
 
