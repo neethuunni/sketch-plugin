@@ -183,7 +183,7 @@ SketchPlugin.prototype.createWebViewRedirectDelegate = function() {
             // You can also fire different methods based on the URL if you have multiple events.
             // A special method to export symbols - we haven’t created it yet
             this.exportAllSymbolsToImages();
-            this.shareToServer();
+            //this.shareToServer();
         }.bind(this)
     );
 
