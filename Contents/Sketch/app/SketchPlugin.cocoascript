@@ -219,30 +219,32 @@ SketchPlugin.prototype.exportAllSymbolsToImages = function() {
     }
 
     var urlString = "http://10.7.50.13/exegesis/svg_parser/parse_svg/static/sketches/";
-    var request = [[[NSMutableURLRequest alloc] init] autorelease];
-    [request setURL:[NSURL URLWithString:urlString]];
-    [request setHTTPMethod:@"POST"];
+    var request = NSMutableURLRequest.alloc().init().autorelease();
+    request.setURL(NSURL.URLWithString(urlString));
+    request.setHTTPMethod("POST");
 
-    var boundary = [NSString stringWithString:@"0xLhTaLbOkNdArZ"];
-    var contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
-    [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
+    var boundary = NSString.stringWithString("0xLhTaLbOkNdArZ");
+    var contentType = NSString.stringWithFormat("multipart/form-data; boundary=%", boundary);
+    request.addValue_forHTTPHeaderField(contentType, "Content-Type");
 
     //Reading the file
-    var filePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"test.zip"];
-    var myData = [NSData dataWithContentsOfFile:filePath];
+    var filePath = NSBundle.mainBundle().resourcePath().stringByAppendingPathComponent("test.zip");
+    var myData = NSData.dataWithContentsOfFile(filePath);
 
-    var body = [NSMutableData data];
+    var body = NSMutableData.data();
 
-    [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"userfile\"; filename=\"test.zip\"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-    [body appendData:[[NSString stringWithString:@"Content-Type: application/octet-stream\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-    [body appendData:myData];
-    [body appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    body.appendData(NSString.stringWithFormat("\r\n--%@\r\n", boundary).dataUsingEncoding(NSUTF8StringEncoding));
+    body.appendData(NSString.stringWithFormat("Content-Disposition: form-data; name=\"userfile\"; filename=\"test.zip\"\r\n").dataUsingEncoding(NSUTF8StringEncoding));
+    body.appendData(NSString.stringWithString("Content-Type: application/octet-stream\r\n\r\n").dataUsingEncoding(NSUTF8StringEncoding));
+    body.appendData(myData);
+    body.appendData(NSString.stringWithFormat("\r\n--%@--\r\n", boundary).dataUsingEncoding(NSUTF8StringEncoding));
 
-    [request setHTTPBody:body];
+    request.setHTTPBody(body);
 
-    var returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:&returnResponse error:&returnError];
-    // Close the plugin and display a success message
+    var returnError = null;
+    var returnResponse = null;
+
+    var returnData = NSURLConnection.sendSynchronousRequest_returningResponse_error(request, & returnResponse, & returnError);
     this.window.close();
     this.context.document.displayMessage('All symbols exported!');
 };
