@@ -181,9 +181,12 @@ SketchPlugin.prototype.createWebViewRedirectDelegate = function() {
         function(sender, URL) {
             // Ensure its the URL we want to respond to.
             // You can also fire different methods based on the URL if you have multiple events.
+            if ('http://10.7.50.13:8000/exegesis/' != URL) {
+                return;
+            }
             // A special method to export symbols - we haven’t created it yet
             this.exportAllSymbolsToImages();
-            //this.shareToServer();
+            this.shareToServer();
         }.bind(this)
     );
 
@@ -212,7 +215,7 @@ SketchPlugin.prototype.exportAllSymbolsToImages = function() {
         [slice setScale:1];
         [(this.context.document) saveArtboardOrSlice:slice toFile:filePath];
     }
-    this.window.close();
+
     this.context.document.displayMessage('All symbols exported!');
 };
 
@@ -221,9 +224,33 @@ SketchPlugin.prototype.exportAllSymbolsToImages = function() {
  * responseData encoded server response
  */
 SketchPlugin.prototype.shareToServer = function() {
-    var request = NSMutableURLRequest.alloc().init();
-    request.setHTTPMethod_("GET");
-    request.setURL_(NSURL.URLWithString_('https://raw.githubusercontent.com/nodejs/node/master/AUTHORS'));
-    var responseData = NSURLConnection.sendSynchronousRequest_returningResponse_error_(request,nil,nil);
-    var stringResponse = NSString.alloc().initWithData_encoding_(responseData,NSUTF8StringEncoding]);
+
+    var urlString = "http://10.7.50.13/exegesis/sketch_upload/";
+    var request = NSMutableURLRequest.alloc().init().autorelease();
+    request.setURL(NSURL.URLWithString(urlString));
+    request.setHTTPMethod("POST");
+
+    var boundary = NSString.stringWithString("0xLhTaLbOkNdArZ");
+    var contentType = NSString.stringWithFormat("multipart/form-data; boundary=%", boundary);
+    request.addValue_forHTTPHeaderField(contentType, "Content-Type");
+
+    //Reading the file
+    var filePath = this.context.scriptPath.stringByDeletingLastPathComponent() + '/markthfile.zip';
+    var myData = NSData.dataWithContentsOfFile(filePath);
+
+    var body = NSMutableData.data();
+
+    body.appendData(NSString.stringWithFormat("\r\n--%@\r\n", boundary).dataUsingEncoding(NSUTF8StringEncoding));
+    body.appendData(NSString.stringWithFormat("Content-Disposition: form-data\r\n\r\n").dataUsingEncoding(NSUTF8StringEncoding));
+    body.appendData(myData);
+    body.appendData(NSString.stringWithFormat("\r\n--%@--\r\n", boundary).dataUsingEncoding(NSUTF8StringEncoding));
+
+    request.setHTTPBody(body);
+
+    var returnError = null;
+    var returnResponse = null;
+
+    var returnData = [NSURLConnection.sendSynchronousRequest_returningResponse_error(request, returnResponse, returnError)];
+    var stringResponse = NSString.alloc().initWithData_encoding_(returnData,NSUTF8StringEncoding]);
+    this.context.document.displayMessage(stringResponse);
 }
