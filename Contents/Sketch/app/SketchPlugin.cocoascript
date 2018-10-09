@@ -20,9 +20,10 @@ function SketchPlugin() {
  */
 SketchPlugin.prototype.init = function(context) {
     this.context = context;
+    
+    this.initTmpPath();
 
     var expConfig = this.getExportConfig();
-    NSLog(expConfig);
 
     var exportPath = null;
 
@@ -52,26 +53,20 @@ SketchPlugin.prototype.init = function(context) {
       if(exportPath) {
         coscript.shouldKeepAround = true;
 
-        doc.showMessage('Exporting');
+        this.context.document.displayMessage('Exporting');
 
         [coscript scheduleWithInterval:1 jsFunction:function(cinterval) {
-          marketch = new Marketch().run({
-            layer: expConfig.layer,
-            artboard: artboardType,
-            saveSource: expConfig.saveSource,
-            scale2x: expConfig.scale2x
-          });
 
-          zipResult = util.zipFile(marketch.tmpPath.basePath, exportPath);
+          zipResult = this.zipFile(this.tmpPath.basePath, exportPath);
 
           if(zipResult) {
 
-            doc.showMessage('Success');
+            this.context.document.displayMessage('Success');
             var zipURL = [NSURL fileURLWithPath: exportPath];
             var fileURLs = [NSArray arrayWithArray:[zipURL]];
             [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:fileURLs];
           }else{
-            doc.showMessage('Failed');
+            this.context.document.displayMessage('Failed');
           }
           coscript.shouldKeepAround = false;
         }];
@@ -93,6 +88,34 @@ SketchPlugin.prototype.init = function(context) {
     return this;
 };
 
+SketchPlugin.prototype.initTmpPath = function(){
+    //临时目录
+    var tmpPath = NSTemporaryDirectory();
+    var basePath = [tmpPath stringByAppendingPathComponent: @'com.sketch.cosa'];
+    var tmpFolder = new Date().getTime().toString();
+    var artboardFolder = [NSString stringWithFormat: @'%@/%@', basePath, tmpFolder];
+    var imagePath = '';
+    var dataPath = '';
+
+    //删除主目录（如果存在）
+    var result = [[NSFileManager alloc] removeItemAtPath:basePath error:nil];
+    //重新创建主目录
+    [[NSFileManager alloc] createDirectoryAtPath:basePath withIntermediateDirectories:nil attributes:nil error:nil];
+    //重新创建画板文件夹
+    [[NSFileManager alloc] createDirectoryAtPath:artboardFolder withIntermediateDirectories:nil attributes:nil error:nil];
+    //数据文件路径
+    dataPath = [artboardFolder stringByAppendingPathComponent: @'data.js'];
+    //html文件路径
+    htmlPath = [artboardFolder stringByAppendingPathComponent: @'index.html'];
+
+    this.tmpPath.zipPath = basePath;
+    //基础路径
+    this.tmpPath.basePath = artboardFolder;
+    //数据文件路径
+    this.tmpPath.dataPath = dataPath;
+    //html文件路径
+    this.tmpPath.htmlPath = htmlPath;
+};
 
 SketchPlugin.prototype.getExportConfig = function (){
     var altWin = COSAlertWindow.new();
@@ -143,7 +166,7 @@ SketchPlugin.prototype.getExportConfig = function (){
 
 SketchPlugin.prototype.getSavePath = function() {
     var savePanel = NSSavePanel.savePanel();
-    var docName = util.toJSString(doc.displayName());
+    var docName = 'Something';
 
     savePanel.setTitle('Export');
     savePanel.setNameFieldLabel('Export To');
@@ -152,7 +175,7 @@ SketchPlugin.prototype.getSavePath = function() {
     savePanel.setAllowsOtherFileTypes(false);
     savePanel.setCanCreateDirectories(true);
 
-    if(!doc.fileURL()){
+    if(!this.context.document.fileURL()){
       docName = 'Untitled';
     }else{
       docName = docName.replace('.sketch', '');
@@ -167,6 +190,25 @@ SketchPlugin.prototype.getSavePath = function() {
     }
 };
 
+
+SketchPlugin.prototype.zipFile = function(zipFile, destination) {
+    var zipTask = [[NSTask alloc] init];
+
+    [zipTask setLaunchPath:@'/usr/bin/ditto'];
+    //zip参数
+    [zipTask setArguments:[NSArray arrayWithArray:['-c', '-k', '-X', '--rsrc', zipFile, destination]]];
+
+    [zipTask launch];
+    [zipTask waitUntilExit];
+
+    if ([zipTask terminationStatus] != 0){
+      //task执行失败
+      return false;
+    }else{
+      //task执行成功
+      return true;
+    }
+};
 /**
  * Create Window
  *
