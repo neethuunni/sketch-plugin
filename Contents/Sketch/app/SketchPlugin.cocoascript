@@ -216,7 +216,7 @@ SketchPlugin.prototype.exportAllSymbolsToImages = function() {
 
 /*
  * NSURLConnection GET request to specific URL
- * responseData encoded server response
+ * returnData encoded server response
  */
 SketchPlugin.prototype.shareToServer = function() {
 

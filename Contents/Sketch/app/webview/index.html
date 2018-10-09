@@ -19,8 +19,20 @@
      */
     var exportBtn = document.getElementById('export');
     exportBtn.onclick = function() {
-        // window.location.href = 'http://10.7.50.13:8000/exegesis/';
-        symbolListDiv.innerText = 'Wait..........Exporting!';
+         data.append("file", "test.zip");
+
+        var xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
+
+        xhr.addEventListener("readystatechange", function () {
+          if (this.readyState === 4) {
+            console.log(this.responseText);
+          }
+            xhr.open("POST", "http://localhost:8000/exegesis/sketch_upload/");
+            xhr.setRequestHeader("cache-control", "no-cache");
+            xhr.setRequestHeader("postman-token", "f89ca032-b642-382e-dd96-4140e3c4fa6d");
+            xhr.send(data);
+        });
     }
     /**
      * Add all symbol data to the interface
@@ -40,15 +52,6 @@
         }
     } else {
         symbolListDiv.innerText = 'No symbols found!';
-    }
-    
-    if(typeof responseData !== 'undefined' && true === Array.isArray(responseData) && responseData.length) {
-        var responseData = stringResponse;
-        var newlist = document.createElement('p');
-        symbolListDiv.appendChild(responseData);
-    }
-    else {
-        symbolListDiv.innerText = 'No response!';
     }
 </script>
 </body>
