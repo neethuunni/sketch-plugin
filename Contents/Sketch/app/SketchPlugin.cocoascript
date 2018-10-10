@@ -89,31 +89,31 @@ SketchPlugin.prototype.init = function(context) {
 };
 
 SketchPlugin.prototype.initTmpPath = function(){
-    //临时目录
+
     var tmpPath = NSTemporaryDirectory();
+    this.context.document.displayMessage(tmpPath);
     var basePath = [tmpPath stringByAppendingPathComponent: @'com.sketch.cosa'];
     var tmpFolder = new Date().getTime().toString();
     var artboardFolder = [NSString stringWithFormat: @'%@/%@', basePath, tmpFolder];
     var imagePath = '';
     var dataPath = '';
 
-    //删除主目录（如果存在）
     var result = [[NSFileManager alloc] removeItemAtPath:basePath error:nil];
-    //重新创建主目录
+
     [[NSFileManager alloc] createDirectoryAtPath:basePath withIntermediateDirectories:nil attributes:nil error:nil];
-    //重新创建画板文件夹
+
     [[NSFileManager alloc] createDirectoryAtPath:artboardFolder withIntermediateDirectories:nil attributes:nil error:nil];
-    //数据文件路径
+
     dataPath = [artboardFolder stringByAppendingPathComponent: @'data.js'];
-    //html文件路径
+
     htmlPath = [artboardFolder stringByAppendingPathComponent: @'index.html'];
 
     this.tmpPath.zipPath = basePath;
-    //基础路径
+
     this.tmpPath.basePath = artboardFolder;
-    //数据文件路径
+
     this.tmpPath.dataPath = dataPath;
-    //html文件路径
+
     this.tmpPath.htmlPath = htmlPath;
 };
 
