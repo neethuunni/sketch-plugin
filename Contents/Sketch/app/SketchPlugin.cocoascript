@@ -91,7 +91,7 @@ SketchPlugin.prototype.init = function(context) {
 SketchPlugin.prototype.initTmpPath = function(){
 
     var tmpPath = NSTemporaryDirectory();
-    this.context.document.displayMessage('something wrongg');
+    NSLog(@"my ns string = %@", tmpPath);
     var basePath = [tmpPath stringByAppendingPathComponent: @'com.sketch.cosa'];
     var tmpFolder = new Date().getTime().toString();
     var artboardFolder = [NSString stringWithFormat: @'%@/%@', basePath, tmpFolder];
