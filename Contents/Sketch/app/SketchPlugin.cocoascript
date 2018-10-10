@@ -8,7 +8,6 @@
 function SketchPlugin() {
     // The Sketch context
     this.context = {};
-    this.tmpPath = {};
 }
 
 /**
@@ -21,7 +20,8 @@ function SketchPlugin() {
  */
 SketchPlugin.prototype.init = function(context) {
     this.context = context;
-    
+    this.tmpPath = {};
+
     this.initTmpPath();
 
     var expConfig = this.getExportConfig();
