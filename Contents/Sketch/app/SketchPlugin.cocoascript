@@ -8,6 +8,7 @@
 function SketchPlugin() {
     // The Sketch context
     this.context = {};
+    this.tmpPath = {};
 }
 
 /**
@@ -28,8 +29,6 @@ SketchPlugin.prototype.init = function(context) {
     var exportPath = null;
 
     var artboardType = null;
-
-    var marketch = null;
 
     var zipResult = null;
 
@@ -91,7 +90,6 @@ SketchPlugin.prototype.init = function(context) {
 SketchPlugin.prototype.initTmpPath = function(){
 
     var tmpPath = NSTemporaryDirectory();
-    NSLog(@"my ns string = %@", tmpPath);
     var basePath = [tmpPath stringByAppendingPathComponent: @'com.sketch.cosa'];
     var tmpFolder = new Date().getTime().toString();
     var artboardFolder = [NSString stringWithFormat: @'%@/%@', basePath, tmpFolder];
