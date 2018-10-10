@@ -52,20 +52,20 @@ SketchPlugin.prototype.init = function(context) {
       if(exportPath) {
         coscript.shouldKeepAround = true;
 
-        this.context.document.displayMessage('Exporting');
-
+        var altWindow = COSAlertWindow.new();
+        altWindow.setMessageText('Exporting');
         [coscript scheduleWithInterval:1 jsFunction:function(cinterval) {
 
           zipResult = this.zipFile(this.tmpPath.basePath, exportPath);
 
           if(zipResult) {
 
-            this.context.document.displayMessage('Success');
+            altWindow.setMessageText('Success');
             var zipURL = [NSURL fileURLWithPath: exportPath];
             var fileURLs = [NSArray arrayWithArray:[zipURL]];
             [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:fileURLs];
           }else{
-            this.context.document.displayMessage('Failed');
+            altWindow.setMessageText('Failed');
           }
           coscript.shouldKeepAround = false;
         }];
